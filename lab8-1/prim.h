@@ -15,6 +15,8 @@ int minDistance(unsigned int *dist, int *mstSet, int NodeCount);
 
 void printMSTEdges(int *way, int NodeCount);
 
+void destroy(unsigned int **Matrix, int NodeCount);
+
 void Prim(unsigned int **Matrix, int NodeCount, int EdgesCount);
 
 #endif
