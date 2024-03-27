@@ -11,10 +11,10 @@ int fillEdges(unsigned int **Matrix, int NodeCount, int EdgesCount);
 
 unsigned int **makeMatrix(int NodeCount, int EdgesCount);
 
-int minKey(unsigned int *key, int *mstSet, int NodeCount);
+int minDistance(unsigned int *dist, int *mstSet, int NodeCount);
 
-void printMSTEdges(int *parent, int NodeCount);
+void printMSTEdges(int *way, int NodeCount);
 
-void primMST(unsigned int **graph, int NodeCount, int EdgesCount);
+void Prim(unsigned int **Matrix, int NodeCount, int EdgesCount);
 
 #endif
