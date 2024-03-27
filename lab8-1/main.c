@@ -12,6 +12,6 @@ int main(void) {
         return 0;
     }
 
-    primMST(Matrix, NodeCount, EdgesCount);
+    Prim(Matrix, NodeCount, EdgesCount);
     return 0;
 }
