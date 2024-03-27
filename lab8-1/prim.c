@@ -121,6 +121,12 @@ void printMSTEdges(int *way, int NodeCount) {
         printf("%d %d\n", way[i] + 1, i + 1);
 }
 
+void destroy(unsigned int **Matrix, int NodeCount) {
+    for (int i = 0; i < NodeCount; i++)
+        free(Matrix[i]);
+    free(Matrix);
+}
+
 void Prim(unsigned int **Matrix, int NodeCount, int EdgesCount) {
     int *way = malloc(NodeCount * sizeof(int));
     unsigned int *dist = malloc(NodeCount * sizeof(unsigned int));
@@ -153,6 +159,7 @@ void Prim(unsigned int **Matrix, int NodeCount, int EdgesCount) {
     }
 
     printMSTEdges(way, NodeCount);
+    destroy(Matrix, NodeCount);
     free(way);
     free(dist);
     free(mstSet);
