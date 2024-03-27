@@ -116,7 +116,7 @@ int minDistance(unsigned int *dist, int *mstSet, int NodeCount) {
     return min_index;
 }
 
-void printMSTEdges(int *way, int NodeCount) {
+void printEdges(int *way, int NodeCount) {
     for (int i = 1; i < NodeCount; i++)
         printf("%d %d\n", way[i] + 1, i + 1);
 }
@@ -158,7 +158,7 @@ void Prim(unsigned int **Matrix, int NodeCount, int EdgesCount) {
         return;
     }
 
-    printMSTEdges(way, NodeCount);
+    printEdges(way, NodeCount);
     destroy(Matrix, NodeCount);
     free(way);
     free(dist);
