@@ -105,49 +105,46 @@ unsigned int **makeMatrix(int NodeCount, int EdgesCount) {
     return Matrix;
 }
 
-int minKey(unsigned int *key, int *mstSet, int NodeCount) {
+int minDistance(unsigned int *dist, int *mstSet, int NodeCount) {
     unsigned int min = UINT_MAX;
     int min_index;
 
     for (int v = 0; v < NodeCount; v++)
-        if (mstSet[v] == 0 && key[v] < min)
-            min = key[v], min_index = v;
+        if (mstSet[v] == 0 && dist[v] < min)
+            min = dist[v], min_index = v;
 
     return min_index;
 }
 
-void printMSTEdges(int *parent, int NodeCount) {
-    for (int i = 1; i < NodeCount; i++) {
-        printf("%d %d\n", parent[i] + 1, i + 1);
-    }
+void printMSTEdges(int *way, int NodeCount) {
+    for (int i = 1; i < NodeCount; i++)
+        printf("%d %d\n", way[i] + 1, i + 1);
 }
 
-void primMST(unsigned int **graph, int NodeCount, int EdgesCount) {
-    int *parent = malloc(NodeCount * sizeof(int));
-    unsigned int *key = malloc(NodeCount * sizeof(unsigned int));
+void Prim(unsigned int **Matrix, int NodeCount, int EdgesCount) {
+    int *way = malloc(NodeCount * sizeof(int));
+    unsigned int *dist = malloc(NodeCount * sizeof(unsigned int));
     int *mstSet = malloc(NodeCount * sizeof(int));
 
-    graph = makeMatrix(NodeCount, EdgesCount);
+    Matrix = makeMatrix(NodeCount, EdgesCount);
 
-    if (graph == 0)
+    if (Matrix == 0)
         return;
 
     for (int i = 0; i < NodeCount; i++)
-        key[i] = UINT_MAX, mstSet[i] = 0;
+        dist[i] = UINT_MAX, mstSet[i] = 0;
 
-    key[0] = 0;
-    parent[0] = -1;
+    dist[0] = 0;
+    way[0] = -1;
 
     for (int count = 0; count < NodeCount - 1; count++) {
-        int u = minKey(key, mstSet, NodeCount);
+        int u = minDistance(dist, mstSet, NodeCount);
 
         mstSet[u] = 1;
 
         for (int v = 0; v < NodeCount; v++)
-
-            if (graph[u][v] && mstSet[v] == 0 && graph[u][v] < key[v]) {
-                parent[v] = u, key[v] = graph[u][v];
-            }
+            if (Matrix[u][v] && mstSet[v] == 0 && Matrix[u][v] < dist[v])
+                way[v] = u, dist[v] = Matrix[u][v];
     }
 
     if (EdgesCount == 1) {
@@ -155,8 +152,8 @@ void primMST(unsigned int **graph, int NodeCount, int EdgesCount) {
         return;
     }
 
-    printMSTEdges(parent, NodeCount);
-    free(parent);
-    free(key);
+    printMSTEdges(way, NodeCount);
+    free(way);
+    free(dist);
     free(mstSet);
 }
