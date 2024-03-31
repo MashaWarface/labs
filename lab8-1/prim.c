@@ -32,7 +32,7 @@ int Errors(int NodeCount, int Start, int Finish, int EdgesCount, unsigned int Le
 
 int find(int *list, int length, int a) {
     for (int i = 0; i < length; i++)
-        if (a == list[i])
+        if (a == *(list + i))
             return 1;
     return 0;
 }
@@ -45,8 +45,8 @@ unsigned int **memMatrix(int NodeCount) {
         return 0;
 
     for (int i = 0; i < NodeCount; i++) {
-        Matrix[i] = malloc(NodeCount * sizeof(int));
-        if (Matrix[i] == NULL)
+        *(Matrix + i) = malloc(NodeCount * sizeof(int));
+        if (*(Matrix + i) == NULL)
             return 0;
     }
 
@@ -63,11 +63,11 @@ int fillEdges(unsigned int **Matrix, int NodeCount, int EdgesCount) {
     Vertices = malloc(NodeCount * sizeof(int));
 
     for (int i = 0; i < NodeCount; i++)
-        Vertices[i] = 0;
+        *(Vertices + i) = 0;
 
     for (int i = 0; i < NodeCount; i++)
         for (int j = 0; j < NodeCount; j++)
-            Matrix[i][j] = 0;
+            *(*(Matrix + i) + j) = 0;
 
     for (int i = 0; i < EdgesCount; i++) {
         if (scanf("%d %d %d", &start, &end, &length) != 3) {
@@ -75,14 +75,14 @@ int fillEdges(unsigned int **Matrix, int NodeCount, int EdgesCount) {
             return 0;
         }
         if (!find(Vertices, NodeCount, start))
-            Vertices[index++] = start;
+            *(Vertices + index++) = start;
         if (!find(Vertices, NodeCount, end))
-            Vertices[index++] = end;
+            *(Vertices + index++) = end;
         if (!Errors(NodeCount, start, end, EdgesCount, length))
             return 0;
 
-        Matrix[start - 1][end - 1] = length;
-        Matrix[end - 1][start - 1] = length;
+        *(*(Matrix + start - 1) + end - 1) = length;
+        *(*(Matrix + end - 1) + start - 1) = length;
     }
 
     if (find(Vertices, NodeCount, 0)) {
@@ -110,20 +110,20 @@ int minDistance(unsigned int *dist, int *mstSet, int NodeCount) {
     int min_index;
 
     for (int v = 0; v < NodeCount; v++)
-        if (mstSet[v] == 0 && dist[v] < min)
-            min = dist[v], min_index = v;
+        if (*(mstSet + v) == 0 && *(dist + v) < min)
+            min = *(dist + v), min_index = v;
 
     return min_index;
 }
 
 void printEdges(int *way, int NodeCount) {
     for (int i = 1; i < NodeCount; i++)
-        printf("%d %d\n", way[i] + 1, i + 1);
+        printf("%d %d\n", *(way + i) + 1, i + 1);
 }
 
 void destroy(unsigned int **Matrix, int NodeCount) {
     for (int i = 0; i < NodeCount; i++)
-        free(Matrix[i]);
+        free(*(Matrix + i));
     free(Matrix);
 }
 
@@ -138,19 +138,19 @@ void Prim(unsigned int **Matrix, int NodeCount, int EdgesCount) {
         return;
 
     for (int i = 0; i < NodeCount; i++)
-        dist[i] = UINT_MAX, mstSet[i] = 0;
+        *(dist + i) = UINT_MAX, *(mstSet + i) = 0;
 
-    dist[0] = 0;
-    way[0] = -1;
+    *dist = 0;
+    *way = -1;
 
     for (int count = 0; count < NodeCount - 1; count++) {
         int u = minDistance(dist, mstSet, NodeCount);
 
-        mstSet[u] = 1;
+        *(mstSet + u) = 1;
 
         for (int v = 0; v < NodeCount; v++)
-            if (Matrix[u][v] && mstSet[v] == 0 && Matrix[u][v] < dist[v])
-                way[v] = u, dist[v] = Matrix[u][v];
+            if (*(*(Matrix + u) + v) && *(mstSet + v) == 0 && *(*(Matrix + u) + v) < *(dist + v))
+                *(way + v) = u, *(dist + v) = *(*(Matrix + u) + v);
     }
 
     if (EdgesCount == 1) {
