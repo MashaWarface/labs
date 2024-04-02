@@ -19,25 +19,25 @@ STACK {
     STACK *Next;
 };
 
-LIST *CreateGraph(int NodeCount);
-
-NODE *CreateNode(int Vertex);
-
 STACK *Create(int Vertex);
 
 void Push(STACK *Stack, int Vertex);
 
 void Pop(STACK *Stack);
 
-void Insert(LIST *Graph, int MainVertex, int IncVertex);
+LIST *CreateGraph(int NodeCount);
 
 int FillGraph(LIST *Graph, int NodeCount, int EdgesCount);
 
+NODE *CreateNode(int Vertex);
+
+void Insert(LIST *Graph, int MainVertex, int IncVertex);
+
+void CycleDFS(LIST *Graph, int *Colour, int Vertex, int *Cycle);
+
+int IsCycled(LIST *Graph, int *Colour, int NodeCount, int Cycle);
+
 void DFS(LIST *Graph, STACK *Stack, int Vertex, int *Visited);
-
-int IsCycled(LIST *Graph, int NodeCount);
-
-void CycleDFS(LIST *Graph, int Vertex, int *Colour, int *Cycle);
 
 void TopSort(LIST *Graph, STACK *Stack, int *Visited, int NodeCount);
 

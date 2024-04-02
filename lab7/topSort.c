@@ -82,19 +82,8 @@ void Insert(LIST *Graph, int MainVertex, int IncVertex) {
     Node->Next = (Graph + MainVertex - 1)->First;
     (Graph + MainVertex - 1)->First = Node;
 }
-int IsCycled(LIST *Graph, int NodeCount) {
-    int Cycle = 0;
-    int *Colour = malloc(NodeCount * sizeof(int));
-    for (int i = 0; i < NodeCount; i++)
-        *(Colour + i) = 0;
-    for (int i = 0; i < NodeCount; i++)
-        if (*(Colour + i) == 0)
-            CycleDFS(Graph, i, Colour, &Cycle);
-    if (Cycle == 1)
-        return 1;
-    return 0;
-}
-void CycleDFS(LIST *Graph, int Vertex, int *Colour, int *Cycle) {
+
+void CycleDFS(LIST *Graph, int *Colour, int Vertex, int *Cycle) {
     *(Colour + Vertex) = -1;        // Black = 1, Gray = -1, White = 0
     NODE *CurNode = (Graph + Vertex)->First;
 
@@ -104,11 +93,21 @@ void CycleDFS(LIST *Graph, int Vertex, int *Colour, int *Cycle) {
             *Cycle = 1;
             return;
         }
-        CycleDFS(Graph, IncVertex, Colour, Cycle);
+        CycleDFS(Graph, Colour, IncVertex, Cycle);
         CurNode = CurNode->Next;
     }
+
     *(Colour + Vertex) = 1;
 }
+
+int IsCycled(LIST *Graph, int *Colour, int NodeCount, int Cycle) {
+    for (int i = 0; i < NodeCount; i++)
+        if (*(Colour + i) == 0)
+            CycleDFS(Graph, Colour, i, &Cycle);
+
+    return Cycle;
+}
+
 
 void DFS(LIST *Graph, STACK *Stack, int Vertex, int *Visited) {
     *(Visited + Vertex) = 1;
@@ -120,16 +119,15 @@ void DFS(LIST *Graph, STACK *Stack, int Vertex, int *Visited) {
             DFS(Graph, Stack, IncVertex, Visited);
         CurNode = CurNode->Next;
     }
+
     Push(Stack, Vertex);
 }
 
 void TopSort(LIST *Graph, STACK *Stack, int *Visited, int NodeCount) {
-    Visited = malloc(NodeCount * sizeof(int));
-    for (int i = 0; i < NodeCount; i++)
-        *(Visited + i) = 0;
     for (int i = 0; i < NodeCount; i++)
         if (*(Visited + i) == 0)
             DFS(Graph, Stack, i, Visited);
+
     while (Stack->Next)
         Pop(Stack);
 }
