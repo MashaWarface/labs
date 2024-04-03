@@ -72,9 +72,9 @@ NODE *CreateNode(int Vertex) {
     return Node;
 }
 
-void Insert(LIST *Graph, int MainVertex, int IncVertex) {
-    IncVertex--;
-    NODE *Node = CreateNode(IncVertex);
+void Insert(LIST *Graph, int MainVertex, int AdjVertex) {
+    AdjVertex--;
+    NODE *Node = CreateNode(AdjVertex);
     Node->Next = (Graph + MainVertex - 1)->First;
     (Graph + MainVertex - 1)->First = Node;
 }
@@ -84,13 +84,13 @@ void DFS(LIST *Graph, STACK *Vertices, int *Colour, int Vertex, int *Cycle) {
     NODE *CurNode = (Graph + Vertex)->First;
 
     while (CurNode != NULL) {
-        int IncVertex = CurNode->Vertex;
-        if (*(Colour + IncVertex) == GREY) {
+        int AdjVertex = CurNode->Vertex;
+        if (*(Colour + AdjVertex) == GREY) {
             *Cycle = 1;
             return;
         }
-        if (*(Colour + IncVertex) == WHITE)
-            DFS(Graph, Vertices, Colour, IncVertex, Cycle);
+        if (*(Colour + AdjVertex) == WHITE)
+            DFS(Graph, Vertices, Colour, AdjVertex, Cycle);
         CurNode = CurNode->Next;
     }
 

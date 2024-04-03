@@ -35,7 +35,7 @@ int FillGraph(LIST *Graph, int NodeCount, int EdgesCount);
 
 NODE *CreateNode(int Vertex);
 
-void Insert(LIST *Graph, int MainVertex, int IncVertex);
+void Insert(LIST *Graph, int MainVertex, int AdjVertex);
 
 void DFS(LIST *Graph, STACK *Vertices, int *Colour, int Vertex, int *Cycle);
 
