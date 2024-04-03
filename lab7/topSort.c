@@ -2,7 +2,7 @@
 #include "stdio.h"
 #include "malloc.h"
 
-int Errors(int NodeCount, int EdgesCount, int Start, int End, int Cycle) {
+int Errors(int NodeCount, int EdgesCount, int Start, int End) {
     if (NodeCount < 0 || NodeCount > 2000) {
         puts("bad number of vertices");
         return 0;
@@ -13,10 +13,6 @@ int Errors(int NodeCount, int EdgesCount, int Start, int End, int Cycle) {
     }
     if (Start < 1 || Start > NodeCount || End < 1 || End > NodeCount) {
         puts("bad vertex");
-        return 0;
-    }
-    if (Cycle == 1) {
-        puts("impossible to sort");
         return 0;
     }
     return 1;
@@ -30,17 +26,17 @@ STACK *Create(int Vertex) {
     return NewElement;
 }
 
-void Push(STACK *Stack, int Vertex) {
+void Push(STACK *Vertices, int Vertex) {
     STACK *NewElement = Create(Vertex);
-    STACK *OldElement = Stack->Next;
+    STACK *OldElement = Vertices->Next;
     NewElement->Next = OldElement;
-    Stack->Next = NewElement;
+    Vertices->Next = NewElement;
 }
 
-void Pop(STACK *Stack) {
-    if (Stack->Next) {
-        STACK *OldElement = Stack->Next;
-        Stack->Next = OldElement->Next;
+void Pop(STACK *Vertices) {
+    if (Vertices->Next) {
+        STACK *OldElement = Vertices->Next;
+        Vertices->Next = OldElement->Next;
         printf("%d ", OldElement->Vertex + 1);
         free(OldElement);
     }
@@ -61,7 +57,7 @@ int FillGraph(LIST *Graph, int NodeCount, int EdgesCount) {
             puts("bad number of lines");
             return 0;
         }
-        if (!(Errors(NodeCount, EdgesCount, Start, End, 0)))
+        if (!(Errors(NodeCount, EdgesCount, Start, End)))
             return 0;
         Insert(Graph, Start, End);
     }
@@ -83,51 +79,35 @@ void Insert(LIST *Graph, int MainVertex, int IncVertex) {
     (Graph + MainVertex - 1)->First = Node;
 }
 
-void CycleDFS(LIST *Graph, int *Colour, int Vertex, int *Cycle) {
-    *(Colour + Vertex) = -1;        // Black = 1, Gray = -1, White = 0
+void DFS(LIST *Graph, STACK *Vertices, int *Colour, int Vertex, int *Cycle) {
+    *(Colour + Vertex) = GREY;
     NODE *CurNode = (Graph + Vertex)->First;
 
     while (CurNode != NULL) {
         int IncVertex = CurNode->Vertex;
-        if (*(Colour + IncVertex) == -1) {
+        if (*(Colour + IncVertex) == GREY) {
             *Cycle = 1;
             return;
         }
-        CycleDFS(Graph, Colour, IncVertex, Cycle);
+        if (*(Colour + IncVertex) == WHITE)
+            DFS(Graph, Vertices, Colour, IncVertex, Cycle);
         CurNode = CurNode->Next;
     }
 
-    *(Colour + Vertex) = 1;
+    *(Colour + Vertex) = BLACK;
+    Push(Vertices, Vertex);
 }
 
-int IsCycled(LIST *Graph, int *Colour, int NodeCount, int Cycle) {
+void TopSort(LIST *Graph, STACK *Vertices, int *Colour, int NodeCount, int Cycle) {
     for (int i = 0; i < NodeCount; i++)
-        if (*(Colour + i) == 0)
-            CycleDFS(Graph, Colour, i, &Cycle);
+        if (*(Colour + i) == WHITE)
+            DFS(Graph, Vertices, Colour, i, &Cycle);
 
-    return Cycle;
-}
-
-
-void DFS(LIST *Graph, STACK *Stack, int Vertex, int *Visited) {
-    *(Visited + Vertex) = 1;
-    NODE *CurNode = (Graph + Vertex)->First;
-
-    while (CurNode != NULL) {
-        int IncVertex = CurNode->Vertex;
-        if (!(*(Visited + IncVertex)))
-            DFS(Graph, Stack, IncVertex, Visited);
-        CurNode = CurNode->Next;
+    if (Cycle == 1) {
+        puts("impossible to sort");
+        return;
     }
 
-    Push(Stack, Vertex);
-}
-
-void TopSort(LIST *Graph, STACK *Stack, int *Visited, int NodeCount) {
-    for (int i = 0; i < NodeCount; i++)
-        if (*(Visited + i) == 0)
-            DFS(Graph, Stack, i, Visited);
-
-    while (Stack->Next)
-        Pop(Stack);
+    while (Vertices->Next)
+        Pop(Vertices);
 }
