@@ -1,3 +1,5 @@
+#ifndef GRAPH_H
+#define GRAPH_H
 
 #define NODE struct node
 #define LIST struct list
@@ -17,4 +19,6 @@ void Insert(LIST *Graph, int MainVertex, int AdjVertex);
 
 LIST *CreateGraph(int NodeCount);
 
-int FillGraph(LIST *Graph, int NodeCount, int EdgesCount);
+LIST *FillGraph(LIST *Graph, int *NodeCount, int *EdgesCount);
+
+#endif

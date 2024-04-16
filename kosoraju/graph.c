@@ -1,5 +1,4 @@
 #include "graph.h"
-
 #include "malloc.h"
 #include "stdio.h"
 
@@ -23,14 +22,18 @@ LIST *CreateGraph(int NodeCount) {
     return Graph;
 }
 
-int FillGraph(LIST *Graph, int NodeCount, int EdgesCount) {
+LIST *FillGraph(LIST *Graph, int *NodeCount, int *EdgesCount) {
     int Start, End;
 
-    for (int i = 0; i < EdgesCount; i++) {
+    scanf("%d %d", NodeCount, EdgesCount);
+
+    Graph = CreateGraph(*NodeCount);
+
+    for (int i = 0; i < *EdgesCount; i++) {
         if (scanf("%d %d", &Start, &End) != 2)
             return 0;
         Insert(Graph, Start, End);
     }
 
-    return 1;
+    return Graph;
 }

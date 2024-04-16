@@ -1,3 +1,5 @@
+#ifndef STACK_H
+#define STACK_H
 
 #define STACK struct stack
 
@@ -11,3 +13,5 @@ STACK *Create(int Vertex);
 void Push(STACK *Vertices, int Vertex);
 
 int Pop(STACK *Vertices);
+
+#endif
